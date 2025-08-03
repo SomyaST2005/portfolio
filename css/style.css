@@ -268,6 +268,43 @@ header nav ul li a:hover {
 
 /*
   ========================================
+  MENU TOGGLE (HAMBURGER)
+  ========================================
+  Styles for the mobile navigation toggle button.
+*/
+
+header .menu-toggle {
+  /* Hide the hamburger button by default on larger (desktop) screens. */
+  display: none;
+
+  /* Basic button styling */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0; /* Remove default padding */
+  
+  /* Use flexbox to center the bars and manage their stacking */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 24px;
+}
+
+.menu-toggle .bar {
+  /* Style each of the three bars */
+  display: block; /* Ensure spans behave like block elements */
+  width: 100%;
+  height: 3px;
+  background-color: var(--text-color);
+  border-radius: 30%;
+  
+  /* We will add a transition here for a future animation when the menu is toggled. */
+  transition: all 0.3s ease-in-out;
+}
+
+/*
+  ========================================
   THEME SWITCHER
   ========================================
   Styles for the light/dark mode toggle switch.
@@ -734,6 +771,74 @@ header nav ul li a:hover {
   filter: brightness(75%);
 }
 
+#form-status {
+  /* Common styles for both success and error messages */
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+  
+  /* 
+    IMPORTANT: Hide the container by default.
+    We will use JavaScript to make it visible.
+  */
+  display: none;
+  
+  /* 
+    Add a smooth transition for opacity and transform.
+    This will make the message gracefully fade and slide into view.
+  */
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* 
+  Success State Styling
+  The `.success` class will be added via JavaScript on a successful submission.
+*/
+#form-status.success {
+  display: block; /* Make the element visible */
+  opacity: 1; /* Fade it in */
+  transform: translateY(0); /* Slide it down to its final position */
+  background-color: #d1e7dd; /* A pleasant, light green */
+  color: #0f5132; /* A dark green for good contrast */
+  border: 1px solid #badbcc;
+}
+
+/* 
+  Error State Styling
+  The `.error` class will be added via JavaScript if the submission fails.
+*/
+#form-status.error {
+  display: block; /* Make the element visible */
+  opacity: 1; /* Fade it in */
+  transform: translateY(0); /* Slide it down to its final position */
+  background-color: #f8d7da; /* A standard light red for errors */
+  color: #842029; /* A dark red for good contrast */
+  border: 1px solid #f5c2c7;
+}
+
+/* 
+  Dark Theme Adjustments for Status Messages
+  Ensure the messages have appropriate colors in dark mode.
+  This is a great example of the power of your theme variables!
+*/
+html[data-theme='dark'] #form-status.success {
+  background-color: #0f5132; /* Darker green background */
+  color: #d1e7dd; /* Lighter green text */
+  border-color: #146c43;
+}
+
+html[data-theme='dark'] #form-status.error {
+  background-color: #842029; /* Darker red background */
+  color: #f8d7da; /* Lighter red text */
+  border-color: #9b2a34;
+}
+
+
+
 /*
   ========================================
   FOOTER SECTION
@@ -823,4 +928,188 @@ footer ul li a {
 */
 footer ul li a:hover {
   color: var(--primary-color);
+}
+
+/*
+  ========================================
+  RESPONSIVE STYLES - MEDIA QUERIES
+  ========================================
+  We'll place all our responsive adjustments at the end of the stylesheet.
+  This ensures they correctly override the default desktop styles due to the
+  nature of the CSS cascade.
+*/
+
+/* 
+  Breakpoint 1: Tablet Devices
+  This media query targets screen sizes up to 768px wide. This is a common
+  breakpoint for devices like iPads in portrait mode.
+*/
+@media (max-width: 768px) {
+  /* 
+    The CSS rules we place inside this block will ONLY apply when the
+    browser's viewport width is 768 pixels or less.
+    In the next tasks, we will start adding rules here to adjust our layout,
+    such as changing the project grid from three columns to two.
+  */
+
+  /* 
+    Inside this block, we add rules that will ONLY apply when the viewport
+    is 768px wide or less. These rules override the default desktop styles.
+  */
+
+  /* === Typography Adjustments === */
+  /* Reduce the size of the main hero heading to prevent it from being overwhelming on smaller screens. */
+  #hero h1 {
+    font-size: 2.8rem; /* Down from 3.5rem */
+  }
+
+  /* Also reduce the size of the hero subtitle for better balance. */
+  #hero .hero-subtitle {
+    font-size: 1.25rem; /* Down from 1.5rem */
+  }
+
+  /* === Layout Adjustments === */
+  
+  /* 
+    The 'About Me' section: On tablets, the side-by-side layout can feel
+    cramped. Stacking the image and text vertically creates a better
+    reading flow on a narrower screen.
+  */
+  .about-content {
+    /* Change the flex-direction from the default 'row' to 'column'. */
+    flex-direction: column;
+    
+    /* Increase the gap to provide vertical space between the stacked items. */
+    gap: calc(var(--spacing-unit) * 3);
+  }
+
+  /* Ensure the about image doesn't look too small when stacked. */
+  .about-image {
+    max-width: 250px;
+    margin: 0 auto; /* Center the image container */
+  }
+
+  /* 
+    The 'Projects' section grid: We switch from a 3-column grid to a 2-column grid.
+    This gives each project card more horizontal space, making them larger,
+    more prominent, and easier to tap on a touch device.
+  */
+  .projects-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* 
+    NEW: Hide the traditional navigation menu list.
+    The `!important` flag is sometimes used to ensure an override, but since
+    our media query is at the end of the file, it should have enough specificity.
+    We will try without it first as that is best practice.
+  */
+  header nav {
+    display: none; 
+  }
+
+  /*
+    NEW: Show the menu-toggle button. We change its display property
+    from 'none' to 'flex' (as we defined in its base styles).
+  */
+  .menu-toggle {
+    display: flex;
+  }
+}
+
+
+
+@media (max-width: 480px) {
+  /*
+    The CSS rules we place inside this block will ONLY apply when the
+    browser's viewport width is 480 pixels or less.
+
+    In the next task, we will add rules here to do things like:
+    - Change the project grid from two columns to a single, stacked column.
+    - Further reduce font sizes for optimal readability on small screens.
+    - Adjust padding and margins to maximize content space.
+  */
+
+  /* === Layout Adjustments === */
+  
+  /* 
+    The most critical mobile adjustment: switch the project grid to a single column.
+    This ensures each project card has the full width of the screen, making it
+    large, readable, and easy to tap. We are overriding the 'repeat(2, 1fr)'
+    from our tablet media query.
+  */
+  .projects-container {
+    grid-template-columns: 1fr; /* Or repeat(1, 1fr) */
+  }
+
+  /*
+    On mobile, the side-by-side header layout can feel cramped.
+    We can stack the logo/nav and the theme switcher vertically.
+    Let's also add some space between them.
+  */
+  header .container {
+    flex-direction: column;
+    gap: var(--spacing-unit);
+  }
+
+  /* === Typography Adjustments === */
+  
+  /* 
+    Further reduce the hero heading size for the smallest screens to
+    prevent it from taking up too much vertical space.
+  */
+  #hero h1 {
+    font-size: 2.2rem; /* Down from 2.8rem on tablet */
+  }
+
+  /* Reduce the hero subtitle as well. */
+  #hero .hero-subtitle {
+    font-size: 1.1rem; /* Down from 1.25rem on tablet */
+  }
+
+  /* === Spacing Adjustments === */
+  
+  /*
+    On mobile, vertical space is precious. We can reduce the large top/bottom
+    padding on our main content sections to show more content "above the fold".
+  */
+  #about,
+  #projects,
+  #contact {
+    padding: calc(var(--spacing-unit) * 2) 0;
+  }
+
+  /*
+    NEW CODE STARTS HERE: Usability and Tappability Refinements
+  */
+
+  /*
+    Enhance the hamburger menu's tappable area. The icon itself is small,
+    but adding padding increases the clickable zone around it without
+    changing the icon's size. This is a crucial mobile UX improvement.
+  */
+  .menu-toggle {
+    padding: 0.5rem; /* Adds 8px of tappable space on all sides */
+  }
+
+  /*
+    Increase the size of the project buttons to make them more prominent
+    and easier to tap on a touch screen.
+  */
+  .project-links a {
+    padding: 0.75rem 1.25rem; /* Increased from 0.5rem 1rem */
+    font-size: 1rem; /* Ensure font size is consistently readable */
+  }
+
+  /*
+    Increase the tappable area and spacing of footer social media links.
+    This prevents users from accidentally tapping the wrong link.
+  */
+s  footer ul {
+    gap: calc(var(--spacing-unit) * 1.5); /* Increase the space between links */
+  }
+
+  footer ul li a {
+    padding: 0.4rem; /* Add padding to create a larger tap target */
+  }
 }
